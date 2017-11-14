@@ -42,7 +42,7 @@ public class AboutFileIO {
         assertEquals(size, 22);
         String expected = new String(in);
         assertEquals(expected.length(), 50);
-       // assertEquals(expected, "First line\nSecond line"); //>>??<<
+        // assertEquals(expected, "First line\nSecond line"); //>>??<<
         file.delete();
     }
 
@@ -62,7 +62,7 @@ public class AboutFileIO {
             br = new BufferedReader(fr);
             assertEquals(br.readLine(), "First line"); // first line
             assertEquals(br.readLine(), "Second line"); // second line
-            assertEquals(br.readLine(),null); // what now?
+            assertEquals(br.readLine(), null); // what now?
         } finally {
             // anytime you open access to a file, you should close it or you may
             // lock it from other processes (ie frustrate people)
@@ -93,13 +93,22 @@ public class AboutFileIO {
         // to the String    Buffer
 
         FileReader fileReader = new FileReader(file);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        while(!(bufferedReader.readLine()==null)) {
-            sb.append(bufferedReader.readLine());
-        }
-        closeStream(bufferedReader);
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(fileReader);
+            do {
+                String currentline = bufferedReader.readLine();
+                if (currentline == null) {
+                    break;
+                } else {
+                    sb.append(currentline);
+                }
+            } while (true);
+        } finally {
 
-        assertEquals(sb.toString(), "1. line\n2. line");
+            closeStream(bufferedReader);
+        }
+            assertEquals(sb.toString(), "1. line2. line");
+
     }
 }
-
